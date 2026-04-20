@@ -67,6 +67,7 @@
                 <a href="#research" class="font-medium hover:text-primary transition-colors">Research</a>
                 <a href="#publications" class="font-medium hover:text-primary transition-colors">Publications</a>
                 <a href="#activities" class="font-medium py-2 hover:text-primary transition-colors">Activities</a>
+                <a href="#project" class="font-medium py-2 hover:text-primary transition-colors">Project</a>
                 <a href="#education" class="font-medium hover:text-primary transition-colors">Education</a>
             </div>
             
@@ -83,6 +84,7 @@
                 <a href="#research" class="font-medium py-2 hover:text-primary transition-colors">Research</a>
                 <a href="#publications" class="font-medium py-2 hover:text-primary transition-colors">Publications</a>
                 <a href="#activities" class="font-medium py-2 hover:text-primary transition-colors">Activities</a>
+                <a href="#project" class="font-medium py-2 hover:text-primary transition-colors">Project</a>
                 <a href="#education" class="font-medium py-2 hover:text-primary transition-colors">Education</a>
             </div>
         </div>
@@ -223,6 +225,57 @@
         });
     </script>
 
+    <!-- Project Section -->
+    <div id="Project-section"></div>
+    <script>
+        const initializeProjectStars = () => {
+            const repoLinks = document.querySelectorAll('[data-github-repo]');
+
+            repoLinks.forEach(card => {
+                const repo = card.getAttribute('data-github-repo');
+                const starNode = card.querySelector('[data-repo-stars]');
+                const forkNode = card.querySelector('[data-repo-forks]');
+
+                if (!repo || !starNode) {
+                    return;
+                }
+
+                fetch(`https://api.github.com/repos/${repo}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`GitHub API error: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const stars = typeof data.stargazers_count === 'number' ? data.stargazers_count : 0;
+                        const forks = typeof data.forks_count === 'number' ? data.forks_count : 0;
+                        starNode.textContent = stars.toLocaleString();
+                        if (forkNode) {
+                            forkNode.textContent = forks.toLocaleString();
+                        }
+                    })
+                    .catch(() => {
+                        starNode.textContent = '--';
+                        if (forkNode) {
+                            forkNode.textContent = '--';
+                        }
+                    });
+            });
+        };
+
+        // 动态加载 project.html
+        fetch('./project.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('Project-section').innerHTML = html;
+            initializeProjectStars();
+        })
+        .catch(error => {
+            console.error('加载失败:', error);
+        });
+    </script>
+
     <!-- Education Section -->
     <section id="education" class="py-20 bg-gray-100">
         <div class="container mx-auto px-4 md:px-6">
@@ -311,6 +364,7 @@
                         <li><a href="#about" class="text-gray-400 hover:text-white transition-colors">About Me</a></li>
                         <li><a href="#research" class="text-gray-400 hover:text-white transition-colors">Research</a></li>
                         <li><a href="#publications" class="text-gray-400 hover:text-white transition-colors">Publications</a></li>
+                        <li><a href="#project" class="text-gray-400 hover:text-white transition-colors">Projects</a></li>
                         <li><a href="#education" class="text-gray-400 hover:text-white transition-colors">Education & Experience</a></li>
                         <li><a href="#activities" class="text-gray-400 hover:text-white transition-colors">Activities</a></li>
                         <!-- <li><a href="#" class="text-gray-400 hover:text-white transition-colors">CV / Resume</a></li> -->
